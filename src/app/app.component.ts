@@ -84,12 +84,17 @@ export class AppComponent implements OnInit{
     this.router.navigate(['/']);
   }
   
+  formatDateToISO(date: Date): string {
+    const formattedDate = this.datePipe.transform(date, 'yyyy-MM-dd');
+
+    const formattedTime = this.datePipe.transform(date, 'HH:mm:ss.SSS')+ 'z';
+    return `${formattedDate}T${formattedTime}`;
+  }
   
-
   addTask() {
-    const formattedStartDate = this.datePipe.transform(this.taskStartDate, 'yyyy-MM-dd');
-    const formattedEndDate = this.datePipe.transform(this.taskEndDate, 'yyyy-MM-dd');
-
+    const formattedStartDate = this.formatDateToISO(this.taskStartDate);
+    const formattedEndDate = this.formatDateToISO(this.taskEndDate);
+    console.log(this.taskStartDate)
     const newTask: Task = {
       description: this.taskDescription,
       startDate: this.taskStartDate,
@@ -97,11 +102,15 @@ export class AppComponent implements OnInit{
       iscompleted: false,
       id: ''
     };
-    
+    console.log('Before transformation - taskStartDate:', this.taskStartDate);
+    // const formattedStartDate = this.datePipe.transform(this.taskStartDate, 'yyyy-MM-dd');
+    console.log('After transformation - formattedStartDate:', formattedStartDate);
+
     // this.taskDescription = '';
     // this.taskStartDate = new Date();
     // this.taskEndDate = new Date();
     this.todoService.addTask(newTask)
+          
        .subscribe({
         next: (tasks) => {
           this.tasks.push(newTask);
